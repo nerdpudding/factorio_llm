@@ -80,7 +80,7 @@ Ollama handles all LLM inference. Primary use case is local GPU, but hybrid and 
 | **Factorio** | Version 2.0.72+ (Steam) |
 | **Python 3.11+** | With package manager ([Conda](https://docs.conda.io/en/latest/miniconda.html), venv, or your preference) |
 | **Ollama** | Mode A & B only. [Install from GitHub](https://github.com/ollama/ollama) |
-| **GPU with VRAM** | Mode A only. 16GB+ recommended for local inference |
+| **GPU with VRAM** | Mode A only. 12GB minimum, 24GB+ recommended |
 
 ### Deployment Modes
 
@@ -88,7 +88,7 @@ This project supports three deployment modes:
 
 | Mode | Description | Requirements |
 |------|-------------|--------------|
-| **A: Fully Local** | Ollama + inference on your GPU | Ollama installed, GPU with 16GB+ VRAM |
+| **A: Fully Local** | Ollama + inference on your GPU | Ollama installed, GPU with 12GB+ VRAM |
 | **B: Local + Cloud** | Local Ollama routes to cloud | Ollama installed, `ollama signin` |
 | **C: Fully Cloud** | Everything on ollama.com | API key (no local Ollama needed) |
 
@@ -137,10 +137,12 @@ This project supports three deployment modes:
 
 ### About VRAM Requirements (Mode A only)
 
-Local models work well on 16GB+ VRAM GPUs:
-- **Nemotron-3-Nano Q4**: ~8GB (balanced, recommended)
-- **Nemotron-3-Nano Q8**: ~16GB (higher quality)
-- **Ministral-3 14B Q8**: ~14GB (proven tool calling)
+Model file sizes (from `ollama list`):
+- **Ministral-3 14B Q4**: 9GB model
+- **Ministral-3 14B Q8**: 15GB model
+- **Nemotron-3-Nano 30B Q4**: 24GB model
+
+**Important:** These are just model sizes! Add ~20-30% for KV cache and runtime overhead. A 24GB model needs ~30GB total VRAM.
 
 For cloud modes (B and C), no local GPU is required. See [Ollama Cloud](https://ollama.com/cloud) for available models and pricing.
 
@@ -164,8 +166,9 @@ ollama pull nemotron-3-nano:30b-a3b-q4_K_M
 
 **VRAM notes:**
 - Factorio uses ~2GB VRAM, leaving room for the model
-- Model size ≠ total VRAM usage (add ~20% for KV cache)
-- 16GB GPU can comfortably run Q4 models alongside Factorio
+- Model size ≠ total VRAM usage (add ~20-30% for KV cache)
+- 12GB GPU: Ministral 14B Q4 (9GB) works
+- 24GB+ GPU: Nemotron 30B Q4 (24GB) recommended for best results
 
 **Quick Ollama setup with Docker:**
 ```cmd
@@ -288,11 +291,13 @@ History persists between sessions in `.factorio_chat_history`.
 
 **Local Models (Mode A)**
 
-| Model | VRAM | Notes |
+| Model | Size | Notes |
 |-------|------|-------|
-| Ministral-3 14B Q8 | ~14GB | Proven tool calling |
-| Nemotron-3-Nano Q4 | ~8GB | Balanced (recommended) |
-| Nemotron-3-Nano Q8 | ~16GB | Higher quality |
+| Ministral-3 14B Q4 | 9GB | Smaller, faster |
+| Ministral-3 14B Q8 | 15GB | Proven tool calling |
+| Nemotron-3-Nano 30B Q4 | 24GB | Best tool calling |
+
+*Note: Add ~20-30% to model size for actual VRAM usage (KV cache, overhead).*
 
 **Cloud Models (Modes B & C)**
 
