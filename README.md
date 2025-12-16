@@ -137,12 +137,14 @@ This project supports three deployment modes:
 
 ### About VRAM Requirements (Mode A only)
 
-Model file sizes (from `ollama list`):
-- **Ministral-3 14B Q4**: 9GB model
-- **Ministral-3 14B Q8**: 15GB model
-- **Nemotron-3-Nano 30B Q4**: 24GB model
+Practical VRAM needed (model + Factorio + KV cache):
+- **Ministral-3 14B Q4**: ~12GB (fits on RTX 3080/4070)
+- **Ministral-3 14B Q8**: ~18GB (fits on RTX 3090/4090)
+- **Nemotron-3-Nano 30B Q4**: ~26GB (needs RTX 5090 or multi-GPU)
 
-**Important:** These are just model sizes! Add ~20-30% for KV cache and runtime overhead. A 24GB model needs ~30GB total VRAM.
+System RAM: 64GB recommended for comfortable headroom.
+
+Any model with good function/tool calling support can work - these are just tested examples. If your hardware doesn't fit or smaller models don't perform well, use Mode B or C (cloud) instead.
 
 For cloud modes (B and C), no local GPU is required. See [Ollama Cloud](https://ollama.com/cloud) for available models and pricing.
 
@@ -165,10 +167,9 @@ ollama pull nemotron-3-nano:30b-a3b-q4_K_M
 ```
 
 **VRAM notes:**
-- Factorio uses ~2GB VRAM, leaving room for the model
-- Model size ≠ total VRAM usage (add ~20-30% for KV cache)
-- 12GB GPU: Ministral 14B Q4 (9GB) works
-- 24GB+ GPU: Nemotron 30B Q4 (24GB) recommended for best results
+- Factorio uses ~2GB VRAM, the rest is available for the model
+- Model file size ≠ total VRAM usage (add overhead for KV cache)
+- See [VRAM Requirements](#about-vram-requirements-mode-a-only) for tested configurations
 
 **Quick Ollama setup with Docker:**
 ```cmd
@@ -291,13 +292,13 @@ History persists between sessions in `.factorio_chat_history`.
 
 **Local Models (Mode A)**
 
-| Model | Size | Notes |
-|-------|------|-------|
-| Ministral-3 14B Q4 | 9GB | Smaller, faster |
-| Ministral-3 14B Q8 | 15GB | Proven tool calling |
-| Nemotron-3-Nano 30B Q4 | 24GB | Best tool calling |
+| Model | VRAM needed | Notes |
+|-------|-------------|-------|
+| Ministral-3 14B Q4 | ~12GB | Smaller, faster |
+| Ministral-3 14B Q8 | ~18GB | Proven tool calling |
+| Nemotron-3-Nano 30B Q4 | ~26GB | Best tool calling |
 
-*Note: Add ~20-30% to model size for actual VRAM usage (KV cache, overhead).*
+*Any model with good tool calling support can work. Don't have the VRAM? Use cloud modes instead.*
 
 **Cloud Models (Modes B & C)**
 
