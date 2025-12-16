@@ -545,6 +545,8 @@ Created by **nerdpudding** - [GitHub](https://github.com/nerdpudding)
 
 If you find this useful, a star would be appreciated!
 
+Want to buy me a coffee? [Ko-fi](https://ko-fi.com/nerdpudding)
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.

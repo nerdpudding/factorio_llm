@@ -20,3 +20,7 @@ If you want to contribute code, please open an issue first to discuss the change
 ## Code of Conduct
 
 Be respectful. That's it.
+
+## Support
+
+Want to buy me a coffee? [Ko-fi](https://ko-fi.com/nerdpudding)
