@@ -35,14 +35,23 @@ A terminal-based Python app that connects an LLM to Factorio, letting you contro
 
 ## Overview
 
-This is a **work-in-progress, highly experimental project** exploring how LLMs can enhance gameplay.
+**Factorio** is a game about building and managing automated factories - mining resources, setting up production lines, optimizing logistics, and scaling up. It's complex, rewarding, and involves tracking a lot of moving parts.
 
-The Python app is glue between [Ollama](https://ollama.ai) (LLM backend) and Factorio (game). You type natural language, the LLM decides which game actions to take, and the app executes them via RCON. See [Architecture](#architecture) for details.
+This project is an **experimental co-pilot** for Factorio - experimenting with what works and what doesn't, just like the game itself. Ask questions, give commands, and the LLM figures out which game actions to execute.
 
-**What you can do:**
-- "How much iron am I producing?" → LLM calls `get_production_stats`
-- "Place 5 chests to my right" → LLM calls `get_player_position` + `place_entity`
-- Query game state, discuss strategy, get help with builds
+**Why Factorio?** It has a rich Lua API accessible via RCON, making it perfect for LLM integration. Game state is fully queryable, actions are deterministic, and the complexity benefits from having an assistant that can track everything at once.
+
+See [Architecture](#architecture) for technical details.
+
+**What you can currently do:**
+- 🔍 **Query**: "How much iron am I producing?" "What's my power consumption?" "Show nearby resources"
+- ⛏️ **Mine**: "Mine 500 coal" → instantly mines ore to your inventory
+- 🏗️ **Build**: "Place 5 chests east of me" → calculates positions and places entities
+- 🔧 **Craft**: "Craft 50 iron gear wheels" → queues manual crafting
+- 📊 **Analyze**: "What are my assemblers making?" "Is research complete?"
+
+**The vision (end goal):**
+An AI strategy assistant that understands your factory, suggests optimizations, helps plan expansions, and executes multi-step build orders - all through conversation.
 
 **Why local-first?**
 - **Cost-effective**: No API fees or rate limits
