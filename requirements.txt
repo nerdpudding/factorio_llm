@@ -1,0 +1,15 @@
+# Factorio LLM Dependencies
+# Install with: pip install -r requirements.txt
+
+# RCON communication with Factorio
+factorio-rcon-py
+
+# Phase 3: LLM integration
+pyyaml
+requests
+
+# Phase 5: Terminal colors (optional but recommended)
+colorama
+
+# Phase 5: Enhanced input (history, autocomplete, suggestions)
+prompt-toolkit>=3.0.50

@@ -1,0 +1,190 @@
+# Factorio LLM Configuration
+# ==========================
+# Copy this file to config.yaml and adjust settings as needed.
+
+# Ollama Connection
+# -----------------
+# Three deployment modes are supported:
+#
+# Mode A (Fully Local): Default - local Ollama + local GPU
+#   ollama_url: http://localhost:11434
+#
+# Mode B (Local + Cloud): Local Ollama routes to cloud inference
+#   ollama_url: http://localhost:11434
+#   Requires: ollama signin (one-time)
+#
+# Mode C (Fully Cloud): No local Ollama needed, direct to cloud
+#   ollama_url: https://ollama.com
+#   ollama_api_key: your_api_key_here  # Or set OLLAMA_API_KEY env var
+#
+ollama_url: http://localhost:11434
+
+# API key for Mode C (Fully Cloud) only
+# Get your key at: https://ollama.com (account settings)
+# Can also be set via OLLAMA_API_KEY environment variable
+# ollama_api_key: your_api_key_here
+
+# Model Profiles
+# --------------
+# Define multiple models with their specific parameters.
+# Switch between them by changing 'active_model' or use /switch in chat.
+#
+# LOCAL MODELS (require GPU with sufficient VRAM)
+# -----------------------------------------------
+#   - ministral: Proven tool calling, default choice (~14GB VRAM)
+#   - nemotron-q4: Agentic specialist, balanced (~8GB VRAM)
+#   - nemotron-q8: Higher quality nemotron (~16GB VRAM)
+#
+# CLOUD MODELS (require Ollama account, no local GPU needed)
+# ----------------------------------------------------------
+# Setup: ollama signin, then ollama pull <model-name>
+# See: https://ollama.com/cloud for account + pricing
+#
+#   - nemotron-cloud: Cloud version of nemotron
+#   - ministral-cloud: Cloud version of ministral
+#   - mistral-large-cloud: Mistral's flagship 675B MoE
+#   - gpt-oss-small-cloud: OpenAI's 20B open-weight
+#   - gpt-oss-large-cloud: OpenAI's 120B open-weight
+#   - deepseek-cloud: DeepSeek V3.2 flagship
+#   - kimi-cloud: Moonshot's 1T MoE
+#   - kimi-thinking-cloud: Moonshot's thinking model
+#   - qwen-next-cloud: Qwen's latest efficient model
+#
+# Note on Nemotron parameters (from NVIDIA docs):
+#   - temp=1.0, top_p=1.0 for reasoning tasks
+#   - temp=0.6, top_p=0.95 for tool calling (what we use here)
+#
+# Note on 'think' parameter:
+#   - true = model reasons before answering (smarter but slower)
+#   - false = direct response (faster but less reasoning)
+#   - Only relevant for thinking-capable models
+#
+models:
+  # ===================
+  # LOCAL MODELS
+  # ===================
+
+  ministral:
+    name: ministral-3:14b-instruct-2512-q8_0
+    temperature: 0.15
+    top_p: 0.9
+    num_ctx: 16384
+    num_predict: 1024
+    think: false
+
+  nemotron-q4:
+    name: nemotron-3-nano:30b-a3b-q4_K_M
+    temperature: 0.6   # NVIDIA recommended for tool calling
+    top_p: 0.95        # NVIDIA recommended for tool calling
+    num_ctx: 8192
+    num_predict: 1024
+    think: false
+
+  nemotron-q8:
+    name: nemotron-3-nano:30b-a3b-q8_0
+    temperature: 0.6
+    top_p: 0.95
+    num_ctx: 8192
+    num_predict: 1024
+    think: false
+
+  # ===================
+  # CLOUD MODELS
+  # ===================
+  # Require: ollama signin + ollama pull <model-name>
+  # Privacy note: requests processed on Ollama servers
+
+  # Cloud equivalents of local models
+  nemotron-cloud:
+    name: nemotron-3-nano:30b-cloud
+    temperature: 0.6
+    top_p: 0.95
+    num_ctx: 8192
+    num_predict: 1024
+    think: false
+
+  ministral-cloud:
+    name: ministral-3:14b-cloud
+    temperature: 0.15
+    top_p: 0.9
+    num_ctx: 16384
+    num_predict: 1024
+    think: false
+
+  # Large open-source models (only available via cloud)
+  mistral-large-cloud:
+    name: mistral-large-3:675b-cloud
+    temperature: 0.3
+    top_p: 0.9
+    num_ctx: 32768
+    num_predict: 2048
+    think: false
+
+  gpt-oss-small-cloud:
+    name: gpt-oss:20b-cloud
+    temperature: 0.3
+    top_p: 0.9
+    num_ctx: 16384
+    num_predict: 1024
+    think: false
+
+  gpt-oss-large-cloud:
+    name: gpt-oss:120b-cloud
+    temperature: 0.3
+    top_p: 0.9
+    num_ctx: 32768
+    num_predict: 2048
+    think: false
+
+  deepseek-cloud:
+    name: deepseek-v3.2:cloud
+    temperature: 0.3
+    top_p: 0.9
+    num_ctx: 32768
+    num_predict: 2048
+    think: false
+
+  kimi-cloud:
+    name: kimi-k2:1t-cloud
+    temperature: 0.3
+    top_p: 0.9
+    num_ctx: 32768
+    num_predict: 2048
+    think: false
+
+  kimi-thinking-cloud:
+    name: kimi-k2-thinking:cloud
+    temperature: 0.3
+    top_p: 0.9
+    num_ctx: 32768
+    num_predict: 2048
+    think: true  # Thinking model
+
+  qwen-next-cloud:
+    name: qwen3-next:cloud
+    temperature: 0.3
+    top_p: 0.9
+    num_ctx: 32768
+    num_predict: 2048
+    think: false
+
+# Active model (key from models dict above)
+# Change this to use a different model by default
+active_model: ministral
+
+# Agent settings
+max_tool_iterations: 5  # Prevents infinite loops
+max_history_messages: 20  # Trim old messages to save context window
+
+# Prompt history (↑/↓ arrow keys in chat)
+# Maximum lines to keep in .factorio_chat_history file.
+# This is for INPUT recall only (arrow keys + auto-suggest while typing).
+# NOT for LLM memory - the model does not remember previous sessions.
+# Trimmed at startup only - during a session it can grow beyond this limit.
+# Set to 0 for unlimited history.
+max_prompt_history: 500
+
+# Factorio RCON
+rcon_host: localhost
+rcon_port: 27015
+rcon_password: YOUR_RCON_PASSWORD
